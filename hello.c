@@ -7,34 +7,33 @@
 MODULE_AUTHOR("Jack Shendrikov <jackshen@ukr.net>");
 MODULE_DESCRIPTION("Hello, world in Linux Kernel Training");
 MODULE_LICENSE("Dual BSD/GPL");
+MODULE_VERSION("2.0");
 
 static uint count = 1;
-module_param(count, uint, 0);
-MODULE_PARM_DESC(count, "Count to print 'Hello world!'");
+module_param(count, uint, S_IRUGO);
+MODULE_PARM_DESC(count, "Count to print 'Hello, world!'");
 
-static int __init hello_init(void)
-{
+static int __init hello_init(void) {
 	uint i = 0;
 
-	printk(KERN_INFO "Сount: %d\n", count);
-
-	if (count == 0 || (count >= 5 && count <= 10)) {
-		printk(KERN_WARNING "WARNING\nThe parameter is between [5;10] or 0");
+	if (count == 0) {
+		pr_warning("The parameter is 0");
+	} else if (count >= 5 && count <= 10) {
+		pr_warning("The parameter is %d, between [5;10]", count);
 	} else if (count > 10) {
-		printk(KERN_ERR "ERROR\nThe parameter is greater than 10");
+		pr_err("The parameter is %d, (> 10)", count);
 		return -EINVAL;
 	} 
 
 	for(i = 0; i < count; i++) {
-		printk(KERN_INFO "Hello world!\n");
+		pr_info("Hello, world!\n");
 	}
 	return 0;
 
 }
 
-static void __exit hello_exit(void)
-{
-	printk(KERN_EMERG "Long live and prosper!\n");
+static void __exit hello_exit(void) {
+	pr_emerg("Long live and prosper!\n");
 }
 
 module_init(hello_init);
